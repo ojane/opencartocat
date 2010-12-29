@@ -1,0 +1,18 @@
+1- creem el projecte opencartocat dins del directori arrel que també hem anomennat opencartocat.
+
+geodjango@server:~/opencartocat$ django-admin startproject opencartocat
+geodjango@server:~/opencartocat$ ls
+create_template_postgis-debian.sh  opencartocat  README
+geodjango@server:~/opencartocat$ cd opencartocat
+geodjango@server:~/opencartocat/opencartocat$ ls
+__init__.py  manage.py  settings.py  urls.py
+
+2- creem una aplicació que es dirà mapa.
+
+eodjango@server:~/opencartocat/opencartocat$  python manage.py startapp mapa
+geodjango@server:~/opencartocat/opencartocat$ ls
+__init__.py  __init__.pyc  manage.py  mapa  settings.py  settings.pyc  urls.py
+geodjango@server:~/opencartocat/opencartocat$ cd mapa
+geodjango@server:~/opencartocat/opencartocat/mapa$ ls
+__init__.py  models.py  tests.py  views.py
+geodjango@server:~/opencartocat/opencartocat/mapa$ 

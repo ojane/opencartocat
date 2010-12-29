@@ -1,0 +1,554 @@
+1er instalem django
+
+server:/home/ojane# apt-get install python2.5 python-psycopg2 python-django ipython 
+S'està llegint la llista de paquets... Fet
+S'està construint l'arbre de dependències       
+S'està llegint la informació de l'estat... Fet
+ipython ja es troba en la versió més recent.
+python-psycopg2 ja es troba en la versió més recent.
+python2.5 ja es troba en la versió més recent.
+Paquets suggerits:
+  python-psycopg python-flup python-sqlite python-yaml
+S'instal·laran els paquets NOUS següents:
+  python-django
+0 actualitzats, 1 nous a instal·lar, 0 a suprimir i 6 no actualitzats.
+Es necessita obtenir 0 B/4194 kB d'arxius.
+Després d'aquesta operació s'empraran 20,3 MB d'espai en disc addicional.
+Voleu continuar [S/n]? s
+S'està seleccionant el paquet python-django prèviament no seleccionat.
+(S'està llegint la base de dades … 54873 files and directories currently installed.)
+S'està desempaquetant python-django (de …/python-django_1.2.3-2_all.deb) …
+S'estan processant els activadors per a man-db …
+S'està configurant python-django (1.2.3-2) …
+S'estan processant els activadors per a python-support …
+server:/home/ojane# su geodjango
+geodjango@server:/home/ojane$ 
+
+2- Instal·lar base de dades postgresql 8.4
+
+3- Creem el nostre projecte
+
+geodjango@server:~/geodjango$ django-admin startproject geodjango
+geodjango@server:~/geodjango$ cd geodjango/
+geodjango@server:~/geodjango/geodjango$ 
+
+4- Creem una aplicació anomenada world
+
+geodjango@server:~/geodjango/geodjango$ python manage.py startapp world
+
+
+5- Editem settings.py (amb vi, nano getedit o el que volguem)
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'geodjango',                      # Or path to database file if using sqlite3.
+        'USER': 'geodjango',                      # Not used with sqlite3.
+        'PASSWORD': '5pkbf7dj',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5433',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# On Unix systems, a value of None will cause Django to use the same
+# timezone as the operating system.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'America/Chicago'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale
+USE_L10N = True
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = ''
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+MEDIA_URL = ''
+
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/".
+ADMIN_MEDIA_PREFIX = '/media/'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'qjj$ftyj+uhe6e(ln)r8=5=161tr6*mk93ezoj20o%)fn6**n!'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+#     'django.template.loaders.eggs.Loader',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
+
+ROOT_URLCONF = 'geodjango.urls'
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    # Uncomment the next line to enable the admin:
+    'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
+    # 'django.contrib.admindocs',
+    'django.contrib.gis',
+    'geodjango.world'
+)
+
+6- cridem l'aplicació per generar l'sql. Aquesta crida únicament ens mostra l'sql que s'utilitzarà per tal de crear les taules, acció que es realitza mitjançant syncdb.
+
+geodjango@server:~/geodjango/geodjango$ ./manage.py sqlall world
+BEGIN;CREATE TABLE "world_worldborders" (
+    "id" serial NOT NULL PRIMARY KEY,
+    "name" varchar(50) NOT NULL,
+    "area" integer NOT NULL,
+    "pop2005" integer NOT NULL,
+    "fips" varchar(2) NOT NULL,
+    "iso2" varchar(2) NOT NULL,
+    "iso3" varchar(3) NOT NULL,
+    "un" integer NOT NULL,
+    "region" integer NOT NULL,
+    "subregion" integer NOT NULL,
+    "lon" double precision NOT NULL,
+    "lat" double precision NOT NULL
+)
+;
+SELECT AddGeometryColumn('world_worldborders', 'mpoly', 4326, 'MULTIPOLYGON', 2);
+ALTER TABLE "world_worldborders" ALTER "mpoly" SET NOT NULL;
+CREATE INDEX "world_worldborders_mpoly_id" ON "world_worldborders" USING GIST ( "mpoly" GIST_GEOMETRY_OPS );COMMIT;
+
+7- Creem l'usuari i claus d'accés
+
+geodjango@server:~/geodjango/geodjango$ ./manage.py syncdb
+Creating table auth_permission
+Creating table auth_group_permissions
+Creating table auth_group
+Creating table auth_user_user_permissions
+Creating table auth_user_groups
+Creating table auth_user
+Creating table auth_message
+Creating table django_content_type
+Creating table django_session
+Creating table django_site
+Creating table django_admin_log
+Creating table world_worldborders
+
+You just installed Django's auth system, which means you don't have any superusers defined.
+Would you like to create one now? (yes/no): yes
+Username (Leave blank to use 'geodjango'): 
+E-mail address: opencartocat@gmail.com
+Password: 
+Password (again): 
+Superuser created successfully.
+Installing index for auth.Permission model
+Installing index for auth.Group_permissions model
+Installing index for auth.User_user_permissions model
+Installing index for auth.User_groups model
+Installing index for auth.Message model
+Installing index for admin.LogEntry model
+Installing index for world.WorldBorders model
+No fixtures found.
+
+8- creem un script que carregui les dades dels arxius que descarreguem
+
+geodjango@server:~/geodjango/geodjango$ nano world/load.py
+
+import os
+from django.contrib.gis.utils import LayerMapping
+from models import WorldBorders
+
+world_mapping = {
+    'fips' : 'FIPS',
+    'iso2' : 'ISO2',
+    'iso3' : 'ISO3',
+    'un' : 'UN',
+    'name' : 'NAME',
+    'area' : 'AREA',
+    'pop2005' : 'POP2005',
+    'region' : 'REGION',
+    'subregion' : 'SUBREGION',
+    'lon' : 'LON',
+    'lat' : 'LAT',
+    'mpoly' : 'MULTIPOLYGON',
+}
+
+world_shp = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/TM_WORLD_BORDERS-0.3.shp'))
+
+def run(verbose=True):
+    lm = LayerMapping(WorldBorders, world_shp, world_mapping,
+                      transform=False, encoding='iso-8859-1')
+
+    lm.save(strict=True, verbose=verbose)
+
+9- Pujem la info de les fronteres i dels paisos
+
+geodjango@server:~/geodjango/geodjango$ python manage.py shell
+**********************************************************************
+Welcome to IPython. I will try to create a personal configuration directory
+where you can customize many aspects of IPython's functionality in:
+
+/home/geodjango/.ipython
+Initializing from configuration: /usr/lib/pymodules/python2.6/IPython/UserConfig
+
+Successful installation!
+
+Please read the sections 'Initial Configuration' and 'Quick Tips' in the
+IPython manual (there are both HTML and PDF versions supplied with the
+distribution) to make sure that your system environment is properly configured
+to take advantage of IPython's features.
+
+Important note: the configuration system has changed! The old system is
+still in place, but its setting may be partly overridden by the settings in 
+"~/.ipython/ipy_user_conf.py" config file. Please take a look at the file 
+if some of the new settings bother you. 
+
+
+Please press <RETURN> to start IPython.
+**********************************************************************
+Python 2.6.6 (r266:84292, Oct  9 2010, 11:40:09) 
+Type "copyright", "credits" or "license" for more information.
+
+IPython 0.10 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object'. ?object also works, ?? prints more.
+
+In [1]: from world import load
+
+In [2]: load.run()
+Saved: Antigua and Barbuda
+Saved: Algeria
+Saved: Azerbaijan
+Saved: Albania
+Saved: Armenia
+Saved: Angola
+Saved: American Samoa
+Saved: Argentina
+Saved: Australia
+Saved: Bahrain
+Saved: Barbados
+Saved: Bermuda
+Saved: Bahamas
+Saved: Bangladesh
+Saved: Belize
+Saved: Bosnia and Herzegovina
+Saved: Bolivia
+Saved: Burma
+Saved: Benin
+Saved: Solomon Islands
+Saved: Brazil
+Saved: Bulgaria
+Saved: Brunei Darussalam
+Saved: Canada
+Saved: Cambodia
+Saved: Sri Lanka
+Saved: Congo
+Saved: Democratic Republic of the Congo
+Saved: Burundi
+Saved: China
+Saved: Afghanistan
+Saved: Bhutan
+Saved: Chile
+Saved: Cayman Islands
+Saved: Cameroon
+Saved: Chad
+Saved: Comoros
+Saved: Colombia
+Saved: Costa Rica
+Saved: Central African Republic
+Saved: Cuba
+Saved: Cape Verde
+Saved: Cook Islands
+Saved: Cyprus
+Saved: Denmark
+Saved: Djibouti
+Saved: Dominica
+Saved: Dominican Republic
+Saved: Ecuador
+Saved: Egypt
+Saved: Ireland
+Saved: Equatorial Guinea
+Saved: Estonia
+Saved: Eritrea
+Saved: El Salvador
+Saved: Ethiopia
+Saved: Austria
+Saved: Czech Republic
+Saved: French Guiana
+Saved: Finland
+Saved: Fiji
+Saved: Falkland Islands (Malvinas)
+Saved: Micronesia, Federated States of
+Saved: French Polynesia
+Saved: France
+Saved: Gambia
+Saved: Gabon
+Saved: Georgia
+Saved: Ghana
+Saved: Grenada
+Saved: Greenland
+Saved: Germany
+Saved: Guam
+Saved: Greece
+Saved: Guatemala
+Saved: Guinea
+Saved: Guyana
+Saved: Haiti
+Saved: Honduras
+Saved: Croatia
+Saved: Hungary
+Saved: Iceland
+Saved: India
+Saved: Iran (Islamic Republic of)
+Saved: Israel
+Saved: Italy
+Saved: Cote d'Ivoire
+Saved: Iraq
+Saved: Japan
+Saved: Jamaica
+Saved: Jordan
+Saved: Kenya
+Saved: Kyrgyzstan
+Saved: Korea, Democratic People's Republic of
+Saved: Kiribati
+Saved: Korea, Republic of
+Saved: Kuwait
+Saved: Kazakhstan
+Saved: Lao People's Democratic Republic
+Saved: Lebanon
+Saved: Latvia
+Saved: Belarus
+Saved: Lithuania
+Saved: Liberia
+Saved: Slovakia
+Saved: Liechtenstein
+Saved: Libyan Arab Jamahiriya
+Saved: Madagascar
+Saved: Martinique
+Saved: Mongolia
+Saved: Montserrat
+Saved: The former Yugoslav Republic of Macedonia
+Saved: Mali
+Saved: Morocco
+Saved: Mauritius
+Saved: Mauritania
+Saved: Malta
+Saved: Oman
+Saved: Maldives
+Saved: Mexico
+Saved: Malaysia
+Saved: Mozambique
+Saved: Malawi
+Saved: New Caledonia
+Saved: Niue
+Saved: Niger
+Saved: Aruba
+Saved: Anguilla
+Saved: Belgium
+Saved: Hong Kong
+Saved: Northern Mariana Islands
+Saved: Faroe Islands
+Saved: Andorra
+Saved: Gibraltar
+Saved: Isle of Man
+Saved: Luxembourg
+Saved: Macau
+Saved: Monaco
+Saved: Palestine
+Saved: Montenegro
+Saved: Mayotte
+Saved: Åland Islands
+Saved: Norfolk Island
+Saved: Cocos (Keeling) Islands
+Saved: Antarctica
+Saved: Bouvet Island
+Saved: French Southern and Antarctic Lands
+Saved: Heard Island and McDonald Islands
+Saved: British Indian Ocean Territory
+Saved: Christmas Island
+Saved: United States Minor Outlying Islands
+Saved: Vanuatu
+Saved: Nigeria
+Saved: Netherlands
+Saved: Norway
+Saved: Nepal
+Saved: Nauru
+Saved: Suriname
+Saved: Nicaragua
+Saved: New Zealand
+Saved: Paraguay
+Saved: Peru
+Saved: Pakistan
+Saved: Poland
+Saved: Panama
+Saved: Portugal
+Saved: Papua New Guinea
+Saved: Guinea-Bissau
+Saved: Qatar
+Saved: Reunion
+Saved: Romania
+Saved: Republic of Moldova
+Saved: Philippines
+Saved: Puerto Rico
+Saved: Russia
+Saved: Rwanda
+Saved: Saudi Arabia
+Saved: Saint Kitts and Nevis
+Saved: Seychelles
+Saved: South Africa
+Saved: Lesotho
+Saved: Botswana
+Saved: Senegal
+Saved: Slovenia
+Saved: Sierra Leone
+Saved: Singapore
+Saved: Somalia
+Saved: Spain
+Saved: Saint Lucia
+Saved: Sudan
+Saved: Sweden
+Saved: Syrian Arab Republic
+Saved: Switzerland
+Saved: Trinidad and Tobago
+Saved: Thailand
+Saved: Tajikistan
+Saved: Tokelau
+Saved: Tonga
+Saved: Togo
+Saved: Sao Tome and Principe
+Saved: Tunisia
+Saved: Turkey
+Saved: Tuvalu
+Saved: Turkmenistan
+Saved: United Republic of Tanzania
+Saved: Uganda
+Saved: United Kingdom
+Saved: Ukraine
+Saved: United States
+Saved: Burkina Faso
+Saved: Uruguay
+Saved: Uzbekistan
+Saved: Saint Vincent and the Grenadines
+Saved: Venezuela
+Saved: British Virgin Islands
+Saved: Viet Nam
+Saved: United States Virgin Islands
+Saved: Namibia
+Saved: Wallis and Futuna Islands
+Saved: Samoa
+Saved: Swaziland
+Saved: Yemen
+Saved: Zambia
+Saved: Zimbabwe
+Saved: Indonesia
+Saved: Guadeloupe
+Saved: Netherlands Antilles
+Saved: United Arab Emirates
+Saved: Timor-Leste
+Saved: Pitcairn Islands
+Saved: Palau
+Saved: Marshall Islands
+Saved: Saint Pierre and Miquelon
+Saved: Saint Helena
+Saved: San Marino
+Saved: Turks and Caicos Islands
+Saved: Western Sahara
+Saved: Serbia
+Saved: Holy See (Vatican City)
+Saved: Svalbard
+Saved: Saint Martin
+Saved: Saint Barthelemy
+Saved: Guernsey
+Saved: Jersey
+Saved: South Georgia South Sandwich Islands
+Saved: Taiwan
+
+
+In [3]: exit()
+
+10- creem un arxiu que ens genera una interfaç administrativa
+
+from django.contrib.gis import admin
+from models import WorldBorders
+
+class WorldBordersAdmin(admin.GeoModelAdmin):
+    list_display = ['name', 'area', 'pop2005', 'lon', 'lat']
+    search_fields = ['name']
+
+admin.site.register(WorldBorders, WorldBordersAdmin)
+
+11- editem l'arxiu url.py
+
+from django.conf.urls.defaults import *
+
+# Uncomment the next two lines to enable the admin:
+ from django.contrib import admin
+ admin.autodiscover()
+
+urlpatterns = patterns('',
+    # Example:
+    # (r'^geodjango/', include('geodjango.foo.urls')),
+
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # Uncomment the next line to enable the admin:
+     (r'^admin/', include(admin.site.urls)),
+)
+
+
+12- i engeguem el servidor de desenvolupament.
+
+geodjango@server:~/geodjango/geodjango$ python manage.py runserver 192.168.1.10:8000
+Validating models...
+0 errors found
+
+Django version 1.2.3, using settings 'geodjango.settings'
+Development server is running at http://192.168.1.10:8000/
+Quit the server with CONTROL-C.
+
+
+13- Accedim a la interficie d'administració 192.168.1.10/admin i introduim els noms d'usuari i contrasenyes introduides en el pas 7. Un cop aquí a traves de world ja podem accedir a la cartografia.
+

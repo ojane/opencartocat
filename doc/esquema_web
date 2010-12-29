@@ -1,0 +1,12 @@
+1- creem l'aplicació opencartocat:
+
+python manage startapp opencartocat
+
+2- Dins del directori tindrem:
+
+	a- urls.py (script que busca coincidencies amb pàgines web i les mostra, en el nostre cas haurà de contenir admin i mapa)
+	b- views.py (aquí allotjarem les diferents vistes de la nostra aplicació (en principi la vista mapa; si es vol es pot afegir una vista de zenpl). L'esquelet d'aquestes pàgines vindrà determinat per una template anomenat base.html)
+	c- admin.py (script que genera el necessari per dispossar d'una interficie d'administració.
+	d- load.py (arxiu on carregarem les dades per conformar la base de dades per gestionar els llocs marcats pels visitants)
+
+3- En un altre directori /home/geodjango/templates, generarem l'esquelet de les pàgines a mostrar, i que alimentaran el contingut creat dins de views.py; així doncs les pàgines cridaran als templates aquí definits. El template base s'anomenarà base.html. Les modificacions sobre aquest es realitzaran mitjançant %extends% 
