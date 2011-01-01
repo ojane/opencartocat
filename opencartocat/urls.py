@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from opencartocat.mapa.views import *
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -13,4 +14,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
+    
+    # Posem una cioncidencia per a la pagina corresponent al mapa
+     ('^mapa/$', mapa),
 )
