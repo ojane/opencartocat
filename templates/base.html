@@ -1,0 +1,134 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ 	        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ 	        <head>
+	                <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+ 	                <meta http-equiv="Content-Language" content="en-us" />
+ 	
+ 	                <title>Opencartocat</title>
+ 	
+ 	                <meta name="ROBOTS" content="ALL" />
+ 	                <meta http-equiv="imagetoolbar" content="no" />
+ 	                <meta name="MSSmartTagsPreventParsing" content="true" />
+ 	                <meta name="Copyright" content="This site's design and contents Copyright (c) 2005  Lawrence Journal-World." />
+ 	
+ 	                <meta name="keywords" content="Python, Django, framework, open-source" />
+ 	                <meta name="description" content="Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design." />
+ 	
+ 	                <link href="http://media.djangoproject.com/css/{% block cssid %}base{% endblock %}.css" rel="stylesheet" type="text/css" media="screen" />
+ 	                <link href="http://media.djangoproject.com/css/print.css" rel="stylesheet" type="text/css" media="print" />
+ 	      {% block extrahead %}{% endblock %}
+
+<style type="text/css">
+        #map {
+            width: 1012px;
+            height: 412px;
+            border: 1px solid white;
+        }
+    </style>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script type="text/javascript">
+        
+var map;
+
+    function init(){
+
+        // bbox limits for Catalonia
+        var bounds = new OpenLayers.Bounds(258000,4485000,536000,4752000); 
+        var resolutions = [550,275,100,50,25,10,5,2,1,0.5,0.25]; // m/pixel
+        var genericMapOptions = {projection: "EPSG:23031", units: 'm', maxExtent: bounds}
+        var overviewMapSize = new OpenLayers.Size(128, 123);
+
+        // Tilecache server  -> http://sagitari.icc.cat/tilecache/tilecache.py?
+        // Parameter: layers -> We have tree layers, 'topo', 'orto' and OSM
+        // Ex. layers: 'topo'
+        // Ex. layers: 'orto'
+        // Ex. layers: 'OSM'
+        
+        var topo_tilecache = new OpenLayers.Layer.WMS("Topo ICC",
+                 "http://sagitari.icc.cat/tilecache/tilecache.py?",
+                {layers: 'topo', format:"image/jpeg", exceptions:"application/vnd.ogc.se_xml"},
+                {buffer:0, transitionEffect:'resize'}
+             );
+             
+        var orto_tilecache = new OpenLayers.Layer.WMS("Orto ICC",
+                 "http://sagitari.icc.cat/tilecache/tilecache.py?",
+                {layers: 'orto', format:"image/jpeg", exceptions:"application/vnd.ogc.se_xml"},
+                {buffer:0, transitionEffect:'resize'}
+             );
+        var OSM = new OpenLayers.Layer.OSM();
+        
+             
+        var layers = [topo_tilecache, orto_tilecache, OSM];
+        
+        var mapControls = [ 
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.PanZoomBar(),
+	    new OpenLayers.Control.OverviewMap(),
+	    new OpenLayers.Control.MousePosition(),
+	    new OpenLayers.Control.ScaleLine(),
+	    new OpenLayers.Control.EditingToolbar(layers)
+
+        ];
+
+        var mapOptions = OpenLayers.Util.extend({
+                resolutions: resolutions,
+                controls: mapControls
+            }, genericMapOptions);
+            
+        map = new OpenLayers.Map('map', mapOptions);
+        map.addLayers(layers);
+        map.zoomToMaxExtent();
+        
+        
+    }
+
+    </script>
+
+ 	        </head>
+ 	
+ 	        <body id="{% block sectionid %}generic{% endblock %}" class="{% block coltype %}default{% endblock %}">
+ 	
+ 	        <div id="container">
+ 	                <div id="header">
+ 	                        <h1 id="logo"><a href="http://www.djangoproject.com/"><img src="http://media.djangoproject.com/img/site/hdr_logo.gif" alt="Django" /></a></h1>
+ 	                        <ul id="nav-global">
+ 	                                <li id="nav-homepage"><a href="http://www.djangoproject.com/">Home</a></li>
+ 	                                <li id="nav-download"><a href="http://www.djangoproject.com/download/">Edit</a></li>
+ 	                                <li id="nav-documentation"><a href="http://docs.djangoproject.com/">Login</a></li>
+ 	                                </ul>
+ 	                </div>
+ 	                <!-- END Header -->
+ 	                <div id="mapa">
+				<body onload="init()">
+
+        		        <b>OPENCARTOCAT</b>
+   
+  			        <div>
+         			 Cartografia Catalana amb Geodjango i OpenLayers
+    				 </div>
+   
+    				 <div id="map"></div>
+   
+    				 <div id="docs">
+        			 Projecte final Master programari lliure - <a href="http://uoc.edu">UOC</a>
+    				 </div>
+  				 </body>
+
+ 	                  </div>
+ 	                  <!-- END #content-main -->
+ 	                  </div>
+ 	                <!-- END #content -->
+ 	                <div id="footer">
+ 	                        <p>&copy; 2005-{% now "Y" %} <a href="http://www.djangoproject.com/foundation/">Django Software Foundation</a> unless otherwise noted. Django is a registered trademark of the Django Software Foundation.
+ 	                        Hosting graciously provided by <a href="http://mediatemple.net/">
+ 	                        <img style="vertical-align: middle; position: relative; top: -1px;" src="http://media.djangoproject.com/img/site/mt.png" alt="media temple" /></a>
+ 	                        </p>
+ 	                </div>
+ 	                <!-- END #footer -->
+ 	        </div>
+ 	        <!-- END #container -->
+ 	        </body>
+ 	</html>
+
