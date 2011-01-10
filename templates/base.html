@@ -40,10 +40,13 @@ var map;
         var overviewMapSize = new OpenLayers.Size(128, 123);
 
         // Tilecache server  -> http://sagitari.icc.cat/tilecache/tilecache.py?
-        // Parameter: layers -> We have tree layers, 'topo', 'orto' and OSM
+        // Parameter: layers -> We have tree layers, 'topo', 'orto' and 'limits administratius'
         // Ex. layers: 'topo'
         // Ex. layers: 'orto'
-        // Ex. layers: 'OSM'
+        // Ex. layers: 'limits administratius' who has 'limits comarcals' and 'limits municipals'
+
+
+
         
         var topo_tilecache = new OpenLayers.Layer.WMS("Topo ICC",
                  "http://sagitari.icc.cat/tilecache/tilecache.py?",
@@ -56,22 +59,63 @@ var map;
                 {layers: 'orto', format:"image/jpeg", exceptions:"application/vnd.ogc.se_xml"},
                 {buffer:0, transitionEffect:'resize'}
              );
-        var OSM = new OpenLayers.Layer.OSM();
         
+	//to ad a OSM layer uncomend the next code
+	//var OSM = new OpenLayers.Layer.OSM();
+        
+	var limits_comarques = new OpenLayers.Layer.WMS("Limits comarques",
+		"http://galileo.icc.es/wms/servlet/icc_limadmin_v_r?",
+		{layers:'Comarques,Noms_de_comarca',transparent:true,format:'image/png'},
+		{isBaseLayer:false}
+	 	);
+
+	 var limits_municipis = new OpenLayers.Layer.WMS("Limits municipis",
+                "http://galileo.icc.es/wms/servlet/icc_limadmin_v_r?",
+                {layers:'Municipis,Noms_de_municipi',transparent:true,format:'image/png'},
+                {isBaseLayer:false}
+                );
+	
+	var limitspetit = new OpenLayers.Layer.WMS("Limits comarques",
+                "http://galileo.icc.es/wms/servlet/icc_limadmin_v_r?",
+                {layers:'Comarques,Noms_de_comarca',transparent:false,format:'image/png'},
+                {isBaseLayer:true,displayInLayerSwitcher:false}
+                );
+     
+		
+	limitspetit.setVisibility(false);
+
              
-        var layers = [topo_tilecache, orto_tilecache, OSM];
-        
+        var layers = [topo_tilecache, orto_tilecache, limits_comarques, limits_municipis, limitspetit,];
+
+	var options = {
+		div: $('overviewmap'),
+		layers: [limitspetit.clone()],
+		maxResolution: "auto",
+		projection: "EPSG:23031",
+		units: 'm',
+		maxExtent: new
+		OpenLayers.Bounds(258000,4485000,536000,4752000)
+		};
+
+	var mapaguia = new OpenLayers.Control.OverviewMap({mapOptions:options});
+	
+	mapaguia.isSuitableOverview = function() {
+		return true;
+		};
+		
+	        
         var mapControls = [ 
             new OpenLayers.Control.Navigation(),
             new OpenLayers.Control.LayerSwitcher(),
             new OpenLayers.Control.PanZoomBar(),
-	    new OpenLayers.Control.OverviewMap(),
 	    new OpenLayers.Control.MousePosition(),
 	    new OpenLayers.Control.ScaleLine(),
 	    new OpenLayers.Control.EditingToolbar(layers)
 
         ];
 
+
+	
         var mapOptions = OpenLayers.Util.extend({
                 resolutions: resolutions,
                 controls: mapControls
